@@ -2,6 +2,8 @@
 
 A new Flutter project.
 
+Using state management  flutter_riverpod
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
