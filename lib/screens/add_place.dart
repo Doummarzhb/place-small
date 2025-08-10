@@ -18,7 +18,9 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
     if(enterTitle.isEmpty){
       return ;
     }
-    ref.read(userPlacesProvider);
+    ref.read(userPlacesProvider.notifier).addPlace(enterTitle);
+     Navigator.of(context).pop();
+
   }
 
   void dispose(){
@@ -38,7 +40,7 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
             controller: _titleController,
           ),
           ElevatedButton.icon(
-            onPressed:  (){},
+            onPressed: _savePlace,
             icon:const Icon(Icons.add),
           
             label:const Text('Add Place'),
