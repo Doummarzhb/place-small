@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as syspaths;
 
 class ImageInput extends StatefulWidget {
   const ImageInput({super.key});
@@ -10,9 +12,7 @@ class ImageInput extends StatefulWidget {
 }
 
 class _ImageInputState extends State<ImageInput> {
-  // File? _storedImage;
-  File? _selectImage;
-
+  File? _storedImage;
 
   Future<void> _takePicture() async {
     final imagePicker = ImagePicker();
@@ -23,8 +23,16 @@ class _ImageInputState extends State<ImageInput> {
     if (pickedImage == null) {
       return;
     }
+
+    final imageFile = File(pickedImage.path);
+
+   
+    final appDir = await syspaths.getApplicationDocumentsDirectory();
+    final fileName = path.basename(pickedImage.path);
+    final savedImage = await imageFile.copy('${appDir.path}/$fileName');
+
     setState(() {
-      _selectImage = File(pickedImage.path);
+      _storedImage = savedImage;
     });
   }
 
@@ -34,23 +42,23 @@ class _ImageInputState extends State<ImageInput> {
       height: 250,
       width: double.infinity,
       decoration: BoxDecoration(
-        border: Border.all(
-          width: 1,
-          color: Colors.grey,
-        ),
+        border: Border.all(width: 1, color: Colors.grey),
       ),
       alignment: Alignment.center,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _selectImage != null
+          _storedImage != null
               ? Image.file(
-                  _selectImage!,
+                  _storedImage!,
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: 200,
                 )
-              : const Text('No Image Taken', textAlign: TextAlign.center),
+              : const Text(
+                  'No Image Taken',
+                  textAlign: TextAlign.center,
+                ),
           const SizedBox(height: 10),
           TextButton.icon(
             onPressed: _takePicture,
