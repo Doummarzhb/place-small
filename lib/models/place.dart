@@ -6,10 +6,10 @@ final uuid = Uuid();
 class Place {
   final String id;
   final String title;
-  final String image;
+  final String? image;
 
   Place({
     required this.title,
-    required this.image,  
+      this.image,  
   }) : id = uuid.v4();
 }
