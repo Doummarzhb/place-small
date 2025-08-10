@@ -1,11 +1,9 @@
+import 'dart:io';
 import 'package:applicationnplace/providers/user_places.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:applicationnplace/widgets/image_input.dart';
 import 'package:applicationnplace/widgets/location_input.dart';
-
-
- 
 
 class AddPlaceScreen extends ConsumerStatefulWidget {
   const AddPlaceScreen({super.key});
@@ -16,13 +14,21 @@ class AddPlaceScreen extends ConsumerStatefulWidget {
 
 class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   final _titleController = TextEditingController();
+  File? _selectedImage;
+
+  void _selectImage(File pickedImage) {
+    _selectedImage = pickedImage;
+  }
 
   void _savePlace() {
     final enterTitle = _titleController.text;
-    if (enterTitle.isEmpty) {
+    if (enterTitle.isEmpty || _selectedImage == null) {
       return;
     }
-    ref.read(userPlacesProvider.notifier).addPlace(enterTitle);
+    ref.read(userPlacesProvider.notifier).addPlace(
+      enterTitle,
+      // _selectedImage!,
+    );
     Navigator.of(context).pop();
   }
 
@@ -45,10 +51,9 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               controller: _titleController,
             ),
             const SizedBox(height: 16),
-            const ImageInput(), 
+            ImageInput(_selectImage),
             const SizedBox(height: 16),
-            const SizedBox(height: 16),
-    const LocationInput(),
+            const LocationInput(),
             ElevatedButton.icon(
               onPressed: _savePlace,
               icon: const Icon(Icons.add),
@@ -56,7 +61,8 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
               ),
             ),
           ],
